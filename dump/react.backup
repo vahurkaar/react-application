@@ -1,0 +1,316 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.3
+-- Dumped by pg_dump version 9.5.3
+
+-- Started on 2016-07-24 16:02:22 EEST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 1 (class 3079 OID 12623)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2396 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 181 (class 1259 OID 16394)
+-- Name: sector; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE sector (
+    id bigint NOT NULL,
+    name character varying(255),
+    parent bigint,
+    created timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- TOC entry 183 (class 1259 OID 16410)
+-- Name: user_data; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE user_data (
+    id integer NOT NULL,
+    name character varying(255),
+    created timestamp with time zone DEFAULT now() NOT NULL,
+    modified timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- TOC entry 182 (class 1259 OID 16408)
+-- Name: user_data_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE user_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- TOC entry 2397 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: user_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE user_data_id_seq OWNED BY user_data.id;
+
+
+--
+-- TOC entry 185 (class 1259 OID 16427)
+-- Name: user_sector; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE user_sector (
+    id integer NOT NULL,
+    user_id integer,
+    sector_id integer,
+    created timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- TOC entry 184 (class 1259 OID 16425)
+-- Name: user_sector_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE user_sector_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- TOC entry 2398 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: user_sector_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE user_sector_id_seq OWNED BY user_sector.id;
+
+
+--
+-- TOC entry 2259 (class 2604 OID 16413)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY user_data ALTER COLUMN id SET DEFAULT nextval('user_data_id_seq'::regclass);
+
+
+--
+-- TOC entry 2262 (class 2604 OID 16430)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY user_sector ALTER COLUMN id SET DEFAULT nextval('user_sector_id_seq'::regclass);
+
+
+--
+-- TOC entry 2385 (class 0 OID 16394)
+-- Dependencies: 181
+-- Data for Name: sector; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY sector (id, name, parent, created) FROM stdin;
+0	Root sector	\N	2016-07-24 12:35:50.471096+03
+1	Manufacturing	0	2016-07-24 12:35:50.471096+03
+19	Construction materials	1	2016-07-24 12:35:50.471096+03
+18	Electronics and Optics	1	2016-07-24 12:35:50.471096+03
+6	Food and Beverage	1	2016-07-24 12:35:50.471096+03
+342	Bakery &amp; confectionery products	6	2016-07-24 12:35:50.471096+03
+43	Beverages	6	2016-07-24 12:35:50.471096+03
+42	Fish &amp; fish products	6	2016-07-24 12:35:50.471096+03
+40	Meat &amp; meat products	6	2016-07-24 12:35:50.471096+03
+39	Milk &amp; dairy products	6	2016-07-24 12:35:50.471096+03
+437	Other	6	2016-07-24 12:35:50.471096+03
+378	Sweets &amp; snack food	6	2016-07-24 12:35:50.471096+03
+13	Furniture	1	2016-07-24 12:35:50.471096+03
+389	Bathroom/sauna	13	2016-07-24 12:35:50.471096+03
+385	Bedroom	13	2016-07-24 12:35:50.471096+03
+390	Children’s room	13	2016-07-24 12:35:50.471096+03
+98	Kitchen	13	2016-07-24 12:35:50.471096+03
+101	Living room	13	2016-07-24 12:35:50.471096+03
+392	Office	13	2016-07-24 12:35:50.471096+03
+394	Other (Furniture)	13	2016-07-24 12:35:50.471096+03
+341	Outdoor	13	2016-07-24 12:35:50.471096+03
+99	Project furniture	13	2016-07-24 12:35:50.471096+03
+12	Machinery	1	2016-07-24 12:35:50.471096+03
+94	Machinery components	12	2016-07-24 12:35:50.471096+03
+91	Machinery equipment/tools	12	2016-07-24 12:35:50.471096+03
+224	Manufacture of machinery	12	2016-07-24 12:35:50.471096+03
+97	Maritime	12	2016-07-24 12:35:50.471096+03
+271	Aluminium and steel workboats	97	2016-07-24 12:35:50.471096+03
+269	Boat/Yacht building	97	2016-07-24 12:35:50.471096+03
+230	Ship repair and conversion	97	2016-07-24 12:35:50.471096+03
+93	Metal structures	12	2016-07-24 12:35:50.471096+03
+508	Other	12	2016-07-24 12:35:50.471096+03
+227	Repair and maintenance service	12	2016-07-24 12:35:50.471096+03
+11	Metalworking	1	2016-07-24 12:35:50.471096+03
+67	Construction of metal structures	11	2016-07-24 12:35:50.471096+03
+263	Houses and buildings	11	2016-07-24 12:35:50.471096+03
+267	Metal products	11	2016-07-24 12:35:50.471096+03
+542	Metal works	11	2016-07-24 12:35:50.471096+03
+75	CNC-machining	542	2016-07-24 12:35:50.471096+03
+62	Forgings, Fasteners	542	2016-07-24 12:35:50.471096+03
+69	Gas, Plasma, Laser cutting	542	2016-07-24 12:35:50.471096+03
+66	MIG, TIG, Aluminum welding	542	2016-07-24 12:35:50.471096+03
+9	Plastic and Rubber	1	2016-07-24 12:35:50.471096+03
+54	Packaging	9	2016-07-24 12:35:50.471096+03
+556	Plastic goods	9	2016-07-24 12:35:50.471096+03
+559	Plastic processing technology	9	2016-07-24 12:35:50.471096+03
+55	Blowing	559	2016-07-24 12:35:50.471096+03
+57	Moulding	559	2016-07-24 12:35:50.471096+03
+53	Plastics welding and processing	559	2016-07-24 12:35:50.471096+03
+560	Plastic profiles	9	2016-07-24 12:35:50.471096+03
+5	Printing	1	2016-07-24 12:35:50.471096+03
+148	Advertising	5	2016-07-24 12:35:50.471096+03
+150	Book/Periodicals printing	5	2016-07-24 12:35:50.471096+03
+145	Labelling and packaging printing	5	2016-07-24 12:35:50.471096+03
+7	Textile and Clothing	1	2016-07-24 12:35:50.471096+03
+44	Clothing	7	2016-07-24 12:35:50.471096+03
+45	Textile	7	2016-07-24 12:35:50.471096+03
+8	Wood	1	2016-07-24 12:35:50.471096+03
+337	Other (Wood)	8	2016-07-24 12:35:50.471096+03
+51	Wooden building materials	8	2016-07-24 12:35:50.471096+03
+47	Wooden houses	8	2016-07-24 12:35:50.471096+03
+3	Other	0	2016-07-24 12:35:50.471096+03
+37	Creative industries	3	2016-07-24 12:35:50.471096+03
+29	Energy technology	3	2016-07-24 12:35:50.471096+03
+33	Environment	3	2016-07-24 12:35:50.471096+03
+2	Service	0	2016-07-24 12:35:50.471096+03
+25	Business services	2	2016-07-24 12:35:50.471096+03
+35	Engineering	2	2016-07-24 12:35:50.471096+03
+28	Information Technology and Telecommunications	2	2016-07-24 12:35:50.471096+03
+581	Data processing, Web portals, E-marketing	28	2016-07-24 12:35:50.471096+03
+576	Programming, Consultancy	28	2016-07-24 12:35:50.471096+03
+121	Software, Hardware	28	2016-07-24 12:35:50.471096+03
+122	Telecommunications	28	2016-07-24 12:35:50.471096+03
+22	Tourism	2	2016-07-24 12:35:50.471096+03
+141	Translation services	2	2016-07-24 12:35:50.471096+03
+21	Transport and Logistics	2	2016-07-24 12:35:50.471096+03
+111	Air	21	2016-07-24 12:35:50.471096+03
+114	Rail	21	2016-07-24 12:35:50.471096+03
+112	Road	21	2016-07-24 12:35:50.471096+03
+113	Water	21	2016-07-24 12:35:50.471096+03
+\.
+
+
+--
+-- TOC entry 2387 (class 0 OID 16410)
+-- Dependencies: 183
+-- Data for Name: user_data; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY user_data (id, name, created, modified) FROM stdin;
+8	Vahur	2016-07-24 12:40:59.463628+03	2016-07-24 12:41:14.868+03
+9	Vahur Kaar	2016-07-24 12:43:57.117622+03	2016-07-24 13:10:06.395+03
+10	<h1>element</h1>	2016-07-24 13:58:30.741714+03	2016-07-24 13:58:30.741714+03
+\.
+
+
+--
+-- TOC entry 2399 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: user_data_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('user_data_id_seq', 10, true);
+
+
+--
+-- TOC entry 2389 (class 0 OID 16427)
+-- Dependencies: 185
+-- Data for Name: user_sector; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY user_sector (id, user_id, sector_id, created) FROM stdin;
+28	8	1	2016-07-24 12:41:14.867587+03
+29	8	6	2016-07-24 12:41:14.867587+03
+95	9	1	2016-07-24 13:10:06.395534+03
+96	9	6	2016-07-24 13:10:06.395534+03
+97	10	1	2016-07-24 13:58:30.741714+03
+98	10	6	2016-07-24 13:58:30.741714+03
+\.
+
+
+--
+-- TOC entry 2400 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: user_sector_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('user_sector_id_seq', 98, true);
+
+
+--
+-- TOC entry 2265 (class 2606 OID 16398)
+-- Name: sector_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sector
+    ADD CONSTRAINT sector_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2267 (class 2606 OID 16436)
+-- Name: user_data_primary_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY user_data
+    ADD CONSTRAINT user_data_primary_key PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2269 (class 2606 OID 16434)
+-- Name: user_sector_primary_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY user_sector
+    ADD CONSTRAINT user_sector_primary_key PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2270 (class 2606 OID 16399)
+-- Name: fk_drh086trl58cqu8o59c3hj9se; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY sector
+    ADD CONSTRAINT fk_drh086trl58cqu8o59c3hj9se FOREIGN KEY (parent) REFERENCES sector(id);
+
+
+-- Completed on 2016-07-24 16:02:22 EEST
+
+--
+-- PostgreSQL database dump complete
+--
+
