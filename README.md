@@ -29,6 +29,7 @@ The backend is covered with 20 unit tests, which cover 96% of the functionality.
 * Spring Boot 1.3.6
 * ReactJS 15.2.1
 * PostgreSQL 9.5
+* Docker
 
 Requirements
 ------------
@@ -38,16 +39,46 @@ Requirements
 
 Usage
 -----
-Place correct database credentials to *src/main/resources/application-prod.properties* properties file.
 
-Build the project with
+#### Building with Docker
+1. Build a Postgres database Docker container:
+```
+docker build -t example/postgres -f docker/postgres-Dockerfile .
+```
+
+2. Run the Postgres database Docker container:
+```
+docker run --name reactDb -p 15432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d example/postgres
+```
+Note: If you want to access the Docker containers PostgreSQL database, then you need to access the Docker host.
+You can get the Docker host's IP address by executing:
+```
+docker-machine ip
+```
+
+3. Compile the application's Docker container:
+```
+./gradlew buildDocker
+```
+
+4. Run the application's Docker container:
+```
+docker run --name react -p 8080:8080 -t --link reactDb:reactDb example/example-application:1.0
+```
+
+5. Navigate to the main page: [http://{DOCKER_HOST}:8080](http://{DOCKER_HOST}:8080)
+
+#### Building without Docker
+1. Place correct database credentials to *src/main/resources/application-prod.properties* properties file.
+
+2. Build the project with
 ```
 ./gradlew build
 ```
 
-Start the web application with
+3. Start the web application with
 ```
 java -jar build/libs/example-application-1.0.jar
 ```
 
-Navigate to the main page: [http://localhost:8080](http://localhost:8080)
+4. Navigate to the main page: [http://localhost:8080](http://localhost:8080)
